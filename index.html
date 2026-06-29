@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsHub - Live News Aggregator</title>
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>NewsHub</h1>
+            <div class="header-actions">
+                <button id="favoritesBtn" class="favorites-btn">
+                    <i class="fas fa-heart"></i> Favorites (<span id="favCount">0</span>)
+                </button>
+                <div class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="search-section">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="Search news, topics..." autocomplete="off">
+            <div id="suggestions" class="suggestions"></div>
+        </div>
+        <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+    </section>
+
+    <section class="categories">
+        <button class="category-btn active" data-category="business">Business</button>
+        <button class="category-btn" data-category="technology">Technology</button>
+        <button class="category-btn" data-category="sports">Sports</button>
+        <button class="category-btn" data-category="health">Health</button>
+        <button class="category-btn" data-category="science">Science</button>
+        <button class="category-btn" data-category="entertainment">Entertainment</button>
+    </section>
+
+    <div id="error" class="error"></div>
+    <h2 id="articleCount" class="article-count"></h2>
+
+    <main id="news" class="news-grid"></main>
+
+    <div class="load-more">
+        <button id="loadMoreBtn" class="load-btn">Load More</button>
+    </div>
+
+    <footer>
+        <p>Built with NewsAPI • Data updates in real-time</p>
+    </footer>
+
+    <script src="./JS/config.js"></script>
+    <script src="./JS/util.js"></script>
+    <script src="./JS/storage.js"></script>
+    <script src="./JS/api.js"></script>
+    <script src="./JS/ui.js"></script>
+    <script src="./JS/app.js"></script>
+</body>
+</html>
