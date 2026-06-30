@@ -13,3 +13,18 @@ function toggleFavorite(article) {
         favorites = favorites.filter(fav => fav.url !== article.url);
         showToast("Removed from favorites");
     } else {
+        favorites.push(article);
+        showToast("Added to favorites ❤️");
+    }
+    saveFavorites();
+    updateFavCount();
+    
+    if (typeof showingFavorites !== 'undefined' && showingFavorites) {
+        fetchNewsAndRender();
+    }
+}
+
+function updateFavCount() {
+    const countEl = document.getElementById("favCount");
+    if (countEl) countEl.textContent = favorites.length;
+}
