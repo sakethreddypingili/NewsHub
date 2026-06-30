@@ -31,3 +31,38 @@ function createCard(article) {
                 <span>${article.source?.name || "News Source"}</span>
                 <span>${timeAgo(article.publishedAt)}</span>
             </div>
+            <a href="${article.url}" target="_blank" rel="noopener noreferrer" class="read-more">Read Full Article →</a>
+        </div>
+    `;
+
+    // Bookmark click event
+    card.querySelector(".bookmark-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleFavorite(article);
+        if (typeof showingFavorites !== 'undefined' && !showingFavorites) {
+            e.currentTarget.classList.toggle("active");
+        }
+    });
+
+    return card;
+}
+
+function showSkeletonLoader(count = 6) {
+    newsContainer.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+        const skeleton = document.createElement("div");
+        skeleton.className = "skeleton-card";
+        skeleton.innerHTML = `
+            <div class="skeleton-img skeleton-pulse"></div>
+            <div class="skeleton-content">
+                <div class="skeleton-title skeleton-pulse"></div>
+                <div class="skeleton-title skeleton-pulse" style="width: 80%;"></div>
+                <div class="skeleton-text skeleton-pulse"></div>
+                <div class="skeleton-text skeleton-pulse" style="width: 90%;"></div>
+                <div class="skeleton-meta skeleton-pulse"></div>
+            </div>
+        `;
+        newsContainer.appendChild(skeleton);
+    }
+}
