@@ -65,4 +65,3 @@ function showSkeletonLoader(count = 6) {
         `;
         newsContainer.appendChild(skeleton);
     }
-}
