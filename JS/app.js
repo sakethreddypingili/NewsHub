@@ -151,3 +151,4 @@ function setupEventListeners() {
             if (showingFavorites) {
                 favoritesBtn.classList.add("active");
                 categoryButtons.forEach(b => b.classList.remove("active"));
+
