@@ -74,3 +74,142 @@ async function fetchNewsAndRender(isLoadMore = false) {
         });
 
         if (showingFavorites && articles.length === 0) {
+            newsContainer.innerHTML = `
+                <div class="no-favorites">
+                    <i class="far fa-heart"></i>
+                    <p>No favorites saved yet. Click the heart icon on any article to save it here!</p>
+                </div>
+            `;
+        }
+
+        document.getElementById("articleCount").textContent = 
+            `${newsContainer.children.length} articles shown`;
+
+    } catch (error) {
+        if (errorDiv) errorDiv.textContent = "Failed to load news. Please try again.";
+        console.error(error);
+    } finally {
+        isLoading = false;
+    }
+}
+
+function setupEventListeners() {
+    // Search
+    if (searchBtn) {
+        searchBtn.addEventListener("click", () => {
+            performSearch();
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                performSearch();
+            }
+        });
+
+        // Suggestions logic
+        searchInput.addEventListener("input", () => {
+            const val = searchInput.value.trim().toLowerCase();
+            if (!val) {
+                suggestionsDiv.innerHTML = "";
+                suggestionsDiv.classList.remove("active");
+                return;
+            }
+
+            const matches = mockKeywords.filter(k => k.toLowerCase().startsWith(val));
+            renderSuggestions(matches);
+        });
+
+        // Hide suggestions on click outside
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".search-wrapper")) {
+                suggestionsDiv.innerHTML = "";
+                suggestionsDiv.classList.remove("active");
+            }
+        });
+    }
+
+    // Categories
+    categoryButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            showingFavorites = false;
+            if (favoritesBtn) favoritesBtn.classList.remove("active");
+            categoryButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentCategory = btn.dataset.category;
+            currentQuery = "";
+            if (searchInput) searchInput.value = "";
+            fetchNewsAndRender();
+        });
+    });
+
+    // Favorites Header Button
+    if (favoritesBtn) {
+        favoritesBtn.addEventListener("click", () => {
+            showingFavorites = !showingFavorites;
+            if (showingFavorites) {
+                favoritesBtn.classList.add("active");
+                categoryButtons.forEach(b => b.classList.remove("active"));
+            } else {
+                favoritesBtn.classList.remove("active");
+                // Default back to active category or first category
+                if (categoryButtons.length > 0) {
+                    categoryButtons[0].classList.add("active");
+                    currentCategory = categoryButtons[0].dataset.category;
+                }
+            }
+            currentQuery = "";
+            if (searchInput) searchInput.value = "";
+            fetchNewsAndRender();
+        });
+    }
+
+    // Theme Toggle
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("dark");
+            const isDark = document.body.classList.contains("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+            updateThemeIcon(isDark);
+        });
+    }
+
+    // Load More Button
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener("click", () => {
+            currentPage++;
+            fetchNewsAndRender(true);
+        });
+    }
+}
+
+function performSearch() {
+    showingFavorites = false;
+    if (favoritesBtn) favoritesBtn.classList.remove("active");
+    categoryButtons.forEach(b => b.classList.remove("active"));
+    currentQuery = searchInput.value.trim();
+    suggestionsDiv.innerHTML = "";
+    suggestionsDiv.classList.remove("active");
+    fetchNewsAndRender();
+}
+
+function renderSuggestions(matches) {
+    if (matches.length === 0) {
+        suggestionsDiv.innerHTML = "";
+        suggestionsDiv.classList.remove("active");
+        return;
+    }
+
+    suggestionsDiv.innerHTML = matches
+        .map(m => `<div class="suggestion-item">${m}</div>`)
+        .join("");
+    suggestionsDiv.classList.add("active");
+
+    suggestionsDiv.querySelectorAll(".suggestion-item").forEach(item => {
+        item.addEventListener("click", () => {
+            searchInput.value = item.textContent;
+            performSearch();
+        });
+    });
+}
